@@ -1,5 +1,7 @@
+import csv
 from collections.abc import Iterable
 from dataclasses import dataclass
+from pathlib import Path
 
 
 @dataclass(frozen=True)
@@ -29,5 +31,16 @@ def parse_number(text: str) -> float | None:
     except ValueError:
         return None
 
+class CollumnNotFoundError(ValueError):
+    """Исключение, которое выбрасывается, если не найден столбец в CSV файле"""
 
-
+def read_column(path: str | Path, column: str) -> Iterator[str]:
+    """Читает столбец из CSV файла и возвращает список чисел"""
+    with open(path, newline="", encoding="utf-8") as f:
+        reader = csv.DictReader(f)
+        headers = reader.fieldnames or []
+        if column not in headers:
+            raise CollumnNotFoundError(f"колонка {column} не найден. Есть: {', '.join(headers)}")
+        for row in reader:
+            yield row[column]
+ 
