@@ -1,6 +1,7 @@
 from collections.abc import Iterable
 from dataclasses import dataclass
 
+
 @dataclass(frozen=True)
 class Stats:
     count: int
@@ -21,3 +22,12 @@ def compute_stats(value: Iterable[float]) -> Stats:
         mean=round(total / len(data), 2),
         total=total,
     )
+def parse_number(text: str) -> float | None:
+    """Превращает строку в число. Если не получилось - Возвращает None"""
+    try:
+        return float(text.strip())
+    except ValueError:
+        return None
+
+
+
